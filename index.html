@@ -32,6 +32,8 @@
             --warning: #e5c890; /* Yellow */
             --error: #e78284; /* Red */
             
+            --bg-header: rgba(48, 52, 70, 0.75);
+            
             --radius-sm: 8px;
             --radius-md: 16px;
             --radius-lg: 24px;
@@ -63,6 +65,8 @@
             --success: #40a02b; /* Green */
             --warning: #df8e1d; /* Yellow */
             --error: #d20f39; /* Red */
+            
+            --bg-header: rgba(239, 241, 245, 0.75);
         }
 
         /* --- BASIC RESET --- */
@@ -97,17 +101,26 @@
         .app-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem 1.5rem 4rem 1.5rem;
+            padding: 1.25rem 1.5rem 4rem 1.5rem;
         }
 
         /* --- HEADER & BRANDING --- */
         .header {
+            position: sticky;
+            top: 1.25rem;
+            z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-header);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            transition: var(--transition-smooth);
         }
 
         .brand {
