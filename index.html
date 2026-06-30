@@ -1,0 +1,2949 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360 TTS Multiverse Hub</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- DESIGN SYSTEM & TOKENS --- */
+        :root {
+            --bg-base: #080b10;
+            --bg-surface: #0f131a;
+            --bg-surface-elevated: #151a24;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-color-hover: rgba(255, 255, 255, 0.15);
+            
+            --primary: #8b5cf6; /* Violet */
+            --primary-glow: rgba(139, 92, 246, 0.15);
+            --secondary: #06b6d4; /* Cyan */
+            --secondary-glow: rgba(6, 182, 212, 0.15);
+            
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --text-dark: #4b5563;
+            
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            
+            --font-display: 'Outfit', 'Inter', -apple-system, sans-serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease;
+        }
+
+        /* --- BASIC RESET --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 40%);
+        }
+
+        a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- APPLAYOUT --- */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem 1.5rem;
+        }
+
+        /* --- HEADER & BRANDING --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .brand-logo svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .brand-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #ffffff, #d1d5db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        /* --- NAVIGATION TABS --- */
+        .nav-tabs {
+            display: flex;
+            background: var(--bg-surface);
+            padding: 0.35rem;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            gap: 0.25rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.6rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--primary), #7c3aed);
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        /* --- WARNING BANNER (MIXED CONTENT) --- */
+        .warning-banner {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+            display: none;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .warning-banner svg {
+            width: 20px;
+            height: 20px;
+            color: var(--warning);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .warning-banner-content h4 {
+            color: var(--warning);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .warning-banner-content p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        /* --- STATUS CHIPS --- */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .status-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition-smooth);
+        }
+
+        .status-card:hover {
+            border-color: var(--border-color-hover);
+            transform: translateY(-2px);
+        }
+
+        .status-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .status-port {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+
+        .status-badge.online {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge.offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .status-badge.checking {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: currentColor;
+        }
+
+        .status-dot.pulsate {
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        /* --- LAYOUT COLUMNS --- */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- CARDS & PANELS --- */
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-header-title svg {
+            width: 20px;
+            height: 20px;
+            color: var(--secondary);
+        }
+
+        /* --- MODEL SELECTOR GRIDS --- */
+        .model-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .model-selector-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .model-card {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .model-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-md);
+            border: 2px solid transparent;
+            pointer-events: none;
+            transition: var(--transition-fast);
+        }
+
+        .model-card:hover {
+            border-color: var(--border-color-hover);
+            transform: translateY(-2px);
+        }
+
+        .model-card.selected {
+            background: rgba(139, 92, 246, 0.05);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .model-card.selected::after {
+            border-color: var(--primary);
+        }
+
+        .model-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            transition: var(--transition-smooth);
+        }
+
+        .model-card.selected .model-icon {
+            background: var(--primary-glow);
+            color: var(--primary);
+        }
+
+        .model-card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .model-card-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* --- SUB-MODE TOGGLE --- */
+        .sub-mode-toggle {
+            display: flex;
+            background: var(--bg-surface-elevated);
+            border-radius: var(--radius-sm);
+            padding: 0.25rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .sub-mode-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .sub-mode-btn.active {
+            background: var(--bg-surface);
+            color: var(--text-main);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--border-color);
+        }
+
+        /* --- CONFIGURATION FORM --- */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .form-select, .form-input {
+            flex: 1;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-family: var(--font-sans);
+            outline: none;
+            transition: var(--transition-fast);
+        }
+
+        .form-select:focus, .form-input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px var(--secondary-glow);
+        }
+
+        /* --- VOICE CLONING COMPONENT --- */
+        .upload-area {
+            background: var(--bg-surface-elevated);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            margin-bottom: 1rem;
+        }
+
+        .upload-area:hover, .upload-area.drag-over {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.02);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 0.75rem auto;
+            color: var(--text-muted);
+        }
+
+        .upload-text {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .upload-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .upload-active-card {
+            background: var(--bg-surface-elevated);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .upload-active-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .audio-wave-icon {
+            color: var(--success);
+            animation: bounce-wave 1s infinite alternate;
+        }
+
+        @keyframes bounce-wave {
+            0% { transform: scaleY(0.7); }
+            100% { transform: scaleY(1.3); }
+        }
+
+        .upload-active-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .upload-active-size {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .btn-remove-file {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: var(--transition-fast);
+        }
+
+        .btn-remove-file:hover {
+            color: var(--error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* --- SPEED SLIDER --- */
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slider-input {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-surface-elevated);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--secondary);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--secondary-glow);
+            transition: var(--transition-fast);
+        }
+
+        .slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        .slider-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-width: 32px;
+            text-align: right;
+        }
+
+        /* --- MODEL LOAD BUTTONS --- */
+        .reload-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .reload-btn:hover {
+            border-color: var(--border-color-hover);
+            background: var(--bg-surface-elevated);
+        }
+
+        /* --- INPUT TEXT AREA --- */
+        .text-input-wrap {
+            position: relative;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            transition: var(--transition-smooth);
+            margin-bottom: 1.5rem;
+        }
+
+        .text-input-wrap:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .text-area {
+            width: 100%;
+            height: 120px;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            resize: none;
+            outline: none;
+        }
+
+        .text-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .templates-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .template-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-muted);
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .template-btn:hover {
+            border-color: var(--border-color-hover);
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        /* --- BUTTONS --- */
+        .btn {
+            width: 100%;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.6);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background: var(--bg-surface-elevated);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            box-shadow: none;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border-color-hover);
+        }
+
+        /* --- AUDIO PLAYER CARD --- */
+        .player-card {
+            background: var(--bg-surface-elevated);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: none;
+            animation: slide-up 0.4s ease-out;
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.1);
+        }
+
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .player-info-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+
+        .player-info-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 250px;
+        }
+
+        /* WAVEFORM CANVAS CONTAINER */
+        .waveform-container {
+            height: 64px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--radius-sm);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .waveform-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-player-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-player-circle:hover {
+            transform: scale(1.08);
+            background: #7c3aed;
+        }
+
+        .btn-player-circle svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .player-time-display {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .btn-player-action {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .btn-player-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--border-color-hover);
+        }
+
+        .btn-player-action svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* --- HISTORY LOG COLUMN --- */
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .history-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .btn-clear-all {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: var(--transition-fast);
+        }
+
+        .btn-clear-all:hover {
+            color: var(--error);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 520px;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+
+        /* Custom Scrollbar */
+        .history-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .history-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .history-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+        .history-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .history-item {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .history-item:hover {
+            border-color: var(--border-color-hover);
+            transform: scale(0.99);
+        }
+
+        .history-item.playing {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.02);
+        }
+
+        .history-item-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-tag-row {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .history-tag {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .history-tag.tag-model {
+            background: var(--primary-glow);
+            color: var(--primary);
+        }
+
+        .history-tag.tag-voice {
+            background: var(--secondary-glow);
+            color: var(--secondary);
+        }
+
+        .history-time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
+        .history-text {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .history-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-play-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-history-play {
+            background: var(--primary);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .btn-history-play:hover {
+            transform: scale(1.1);
+            background: #7c3aed;
+        }
+
+        .btn-history-play svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .btn-history-action {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: var(--transition-fast);
+        }
+
+        .btn-history-action:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-history-action.btn-delete:hover {
+            color: var(--error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-md);
+        }
+
+        .empty-history svg {
+            width: 32px;
+            height: 32px;
+            opacity: 0.5;
+        }
+
+        /* --- SETTINGS CARD --- */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* --- TOAST NOTIFICATIONS --- */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-color);
+            padding: 0.85rem 1.25rem;
+            border-radius: var(--radius-sm);
+            color: var(--text-main);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            pointer-events: auto;
+            min-width: 280px;
+            max-width: 380px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: toast-slide-in 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes toast-slide-in {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--error); }
+        .toast.warning { border-left: 4px solid var(--warning); }
+
+        .toast-icon {
+            flex-shrink: 0;
+        }
+        .toast.success .toast-icon { color: var(--success); }
+        .toast.error .toast-icon { color: var(--error); }
+        .toast.warning .toast-icon { color: var(--warning); }
+
+        .toast-content {
+            flex-grow: 1;
+        }
+        .toast-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.1rem;
+        }
+        .toast-message {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        .toast-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        /* --- SCREEN CHANGER --- */
+        .tab-content-panel {
+            display: none;
+        }
+        .tab-content-panel.active {
+            display: block;
+        }
+
+        /* --- HELP VIEW --- */
+        .help-section {
+            margin-bottom: 1.5rem;
+        }
+        .help-section h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        .help-section p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+        .help-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            background: var(--bg-surface-elevated);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+        .help-table th, .help-table td {
+            padding: 0.6rem 0.85rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .help-table th {
+            font-weight: 600;
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .help-table td {
+            color: var(--text-muted);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* LOADING ANIMATION */
+        .spinning-loader {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- HEADER -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-logo">
+                    <!-- Speech bubbles icon -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">360 TTS Hub</h1>
+                </div>
+            </div>
+
+            <!-- NAVBAR -->
+            <nav class="nav-tabs">
+                <button class="nav-btn active" data-tab="generator">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                    </svg>
+                    <span>語音合成</span>
+                </button>
+                <button class="nav-btn" data-tab="settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <span>設定</span>
+                </button>
+                <button class="nav-btn" data-tab="help">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                        <line x1="12" y1="17" x2="12.01" y1="17"/>
+                    </svg>
+                    <span>說明</span>
+                </button>
+            </nav>
+        </header>
+
+        <!-- MIXED CONTENT WARNING BANNER -->
+        <div class="warning-banner" id="mixedContentWarning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                <line x1="12" x2="12" y1="9" y2="13"/>
+                <line x1="12" x2="12.01" y1="17" y2="17"/>
+            </svg>
+            <div class="warning-banner-content">
+                <h4>混合內容 (Mixed Content) 限制提醒</h4>
+                <p>您目前透過安全的 HTTPS 連線開啟此頁面，但 TTS API 使用未加密的 HTTP 協定。瀏覽器可能會封鎖這些 API 請求。您可以：(1) 在瀏覽器網址列啟用「載入不安全指令碼」，(2) 下載 index.html 本地開啟，或 (3) 在下方設定中配置 HTTPS/CORS 代理服務。</p>
+            </div>
+        </div>
+
+        <!-- STATUS BAR -->
+        <div class="status-grid">
+            <div class="status-card" data-service="index_main">
+                <div class="status-info">
+                    <span class="status-name">IndexTTS (Main)</span>
+                    <span class="status-port">Port 8001</span>
+                </div>
+                <div class="status-badge checking">
+                    <span class="status-dot pulsate"></span>
+                    <span>檢測中</span>
+                </div>
+            </div>
+            <div class="status-card" data-service="index_tw">
+                <div class="status-info">
+                    <span class="status-name">IndexTTS (TW)</span>
+                    <span class="status-port">Port 8002</span>
+                </div>
+                <div class="status-badge checking">
+                    <span class="status-dot pulsate"></span>
+                    <span>檢測中</span>
+                </div>
+            </div>
+            <div class="status-card" data-service="cosyvoice">
+                <div class="status-info">
+                    <span class="status-name">CosyVoice 3</span>
+                    <span class="status-port">Port 8003</span>
+                </div>
+                <div class="status-badge checking">
+                    <span class="status-dot pulsate"></span>
+                    <span>檢測中</span>
+                </div>
+            </div>
+            <div class="status-card" data-service="qwen">
+                <div class="status-info">
+                    <span class="status-name">Qwen TTS</span>
+                    <span class="status-port">Port 8005</span>
+                </div>
+                <div class="status-badge checking">
+                    <span class="status-dot pulsate"></span>
+                    <span>檢測中</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN LAYOUT -->
+        <main>
+            <!-- PANEL: GENERATOR -->
+            <div class="tab-content-panel active" id="panel-generator">
+                <div class="workspace-grid">
+                    
+                    <!-- Left: Control & Generator -->
+                    <div>
+                        <!-- MODEL SELECTOR -->
+                        <div class="card">
+                            <h3 class="card-header-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="7" height="9"/>
+                                    <rect x="14" y="3" width="7" height="5"/>
+                                    <rect x="14" y="12" width="7" height="9"/>
+                                    <rect x="3" y="16" width="7" height="5"/>
+                                </svg>
+                                選擇語音合成模型
+                            </h3>
+                            
+                            <div class="model-selector-grid">
+                                <div class="model-card selected" data-model="index_main">
+                                    <div class="model-icon">
+                                        <span>1</span>
+                                    </div>
+                                    <div class="model-card-title">IndexTTS (Main)</div>
+                                    <div class="model-card-desc">高音質主模型，支援多種預設中文音色與上傳複製</div>
+                                </div>
+                                <div class="model-card" data-model="index_tw">
+                                    <div class="model-icon">
+                                        <span>2</span>
+                                    </div>
+                                    <div class="model-card-title">IndexTTS (TW)</div>
+                                    <div class="model-card-desc">專為台灣腔調與閩南話優化之語音模型</div>
+                                </div>
+                                <div class="model-card" data-model="cosyvoice">
+                                    <div class="model-icon">
+                                        <span>3</span>
+                                    </div>
+                                    <div class="model-card-title">CosyVoice 3</div>
+                                    <div class="model-card-desc">阿里開源最新語音複製模型，支援零樣本極速克隆</div>
+                                </div>
+                                <div class="model-card" data-model="qwen">
+                                    <div class="model-icon">
+                                        <span>5</span>
+                                    </div>
+                                    <div class="model-card-title">Qwen TTS</div>
+                                    <div class="model-card-desc">基於通義千問的 1.7B 多語言大模型，自然度高</div>
+                                </div>
+                            </div>
+
+                            <!-- DYNAMIC MODEL SUB-MODES & OPTIONS -->
+                            
+                            <!-- IndexTTS (Main & TW) Options -->
+                            <div id="options-index" class="model-options-group">
+                                <div class="sub-mode-toggle">
+                                    <button class="sub-mode-btn active" data-submode="preset">預設音色</button>
+                                    <button class="sub-mode-btn" data-submode="clone">語音克隆 (tts_upload)</button>
+                                </div>
+                                
+                                <div id="index-preset-fields">
+                                    <div class="form-group">
+                                        <label class="form-label" for="indexVoice">選擇角色 (Voice)</label>
+                                        <select class="form-select" id="indexVoice">
+                                            <!-- Dynamically populated or fallback -->
+                                            <option value="jay">Jay (傑倫腔調 - 推薦)</option>
+                                            <option value="gentle_female">Gentle Female (溫柔女聲)</option>
+                                            <option value="professional_male">Professional Male (專業男聲)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div id="index-clone-fields" class="hidden">
+                                    <div class="form-group">
+                                        <label class="form-label">參考音檔 (3-10秒 WAV/MP3)</label>
+                                        <div class="upload-area" id="indexUploadZone">
+                                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                                <polyline points="17 8 12 3 7 8"/>
+                                                <line x1="12" x2="12" y1="3" y2="15"/>
+                                            </svg>
+                                            <div class="upload-text">點擊或拖曳音檔上傳</div>
+                                            <div class="upload-hint">建議為清晰、無背景雜音之短語音檔</div>
+                                        </div>
+                                        <div class="upload-active-card hidden" id="indexActiveFileCard">
+                                            <div class="upload-active-info">
+                                                <svg class="audio-wave-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <line x1="4" y1="9" x2="4" y2="15"/>
+                                                    <line x1="9" y1="6" x2="9" y2="18"/>
+                                                    <line x1="14" y1="8" x2="14" y2="16"/>
+                                                    <line x1="19" y1="11" x2="19" y2="13"/>
+                                                </svg>
+                                                <div>
+                                                    <div class="upload-active-name" id="indexFileName">ref.wav</div>
+                                                    <div class="upload-active-size" id="indexFileSize">0 KB</div>
+                                                </div>
+                                            </div>
+                                            <button class="btn-remove-file" id="indexRemoveFile">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <line x1="18" x2="6" y1="6" y2="18"/>
+                                                    <line x1="6" x2="18" y1="6" y2="18"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="indexSeed">隨機種子 (Seed)</label>
+                                        <div class="form-input-row">
+                                            <input type="number" class="form-input" id="indexSeed" value="8" min="0">
+                                            <button class="reload-btn" id="indexRandomSeedBtn">🎲 隨機</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CosyVoice 3 Options -->
+                            <div id="options-cosyvoice" class="model-options-group hidden">
+                                <div class="sub-mode-toggle">
+                                    <button class="sub-mode-btn active" data-submode="sft">預訓練模式 (SFT)</button>
+                                    <button class="sub-mode-btn" data-submode="zero_shot">零樣本複製 (Zero-Shot)</button>
+                                </div>
+                                
+                                <div id="cosy-sft-fields">
+                                    <div class="form-group">
+                                        <label class="form-label" for="cosyModel">模型切換</label>
+                                        <div class="form-input-row">
+                                            <select class="form-select" id="cosyModel">
+                                                <option value="CosyVoice3-0.5B">CosyVoice3-0.5B (基礎)</option>
+                                                <option value="CosyVoice3-0.5B-Finetuned-1222">CosyVoice3-0.5B-Finetuned-1222 (精調)</option>
+                                            </select>
+                                            <button class="reload-btn" id="cosyReloadModelBtn">載入/切換</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="cosySpeaker">選擇角色 (Speaker)</label>
+                                        <select class="form-select" id="cosySpeaker">
+                                            <option value="">預設 (Default)</option>
+                                        </select>
+                                        <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">若此模型不含預設音色，請留空或使用零樣本複製。</span>
+                                    </div>
+                                </div>
+                                
+                                <div id="cosy-zeroshot-fields" class="hidden">
+                                    <div class="form-group">
+                                        <label class="form-label">參考音檔 (3-10秒 WAV/MP3)</label>
+                                        <div class="upload-area" id="cosyUploadZone">
+                                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                                <polyline points="17 8 12 3 7 8"/>
+                                                <line x1="12" x2="12" y1="3" y2="15"/>
+                                            </svg>
+                                            <div class="upload-text">點擊或拖曳音檔上傳</div>
+                                            <div class="upload-hint">CosyVoice 在 16kHz 語音下克隆效果最佳</div>
+                                        </div>
+                                        <div class="upload-active-card hidden" id="cosyActiveFileCard">
+                                            <div class="upload-active-info">
+                                                <svg class="audio-wave-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <line x1="4" y1="9" x2="4" y2="15"/>
+                                                    <line x1="9" y1="6" x2="9" y2="18"/>
+                                                    <line x1="14" y1="8" x2="14" y2="16"/>
+                                                    <line x1="19" y1="11" x2="19" y2="13"/>
+                                                </svg>
+                                                <div>
+                                                    <div class="upload-active-name" id="cosyFileName">ref.wav</div>
+                                                    <div class="upload-active-size" id="cosyFileSize">0 KB</div>
+                                                </div>
+                                            </div>
+                                            <button class="btn-remove-file" id="cosyRemoveFile">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <line x1="18" x2="6" y1="6" y2="18"/>
+                                                    <line x1="6" x2="18" y1="6" y2="18"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="cosyPromptText">參考音檔內容 (Prompt Text)</label>
+                                        <input type="text" class="form-input" id="cosyPromptText" placeholder="請精確輸入參考音檔中所說的文字...">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="cosySeed">隨機種子 (Seed)</label>
+                                    <div class="form-input-row">
+                                        <input type="number" class="form-input" id="cosySeed" value="-1" min="-1">
+                                        <button class="reload-btn" id="cosyRandomSeedBtn">🎲 隨機</button>
+                                    </div>
+                                    <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">-1 表示使用完全隨機種子。</span>
+                                </div>
+                            </div>
+
+                            <!-- Qwen TTS Options -->
+                            <div id="options-qwen" class="model-options-group hidden">
+                                <div class="form-group">
+                                    <label class="form-label" for="qwenVoice">選擇角色 (Voice)</label>
+                                    <select class="form-select" id="qwenVoice">
+                                        <option value="hayley_normal">Hayley Normal (標準女聲)</option>
+                                        <option value="hayley_happy">Hayley Happy (喜悅女聲)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="qwenLang">語言選取 (Language)</label>
+                                    <select class="form-select" id="qwenLang">
+                                        <option value="Auto">自動偵測 (Auto)</option>
+                                        <option value="Chinese" selected>中文 (Chinese)</option>
+                                        <option value="English">英文 (English)</option>
+                                        <option value="Japanese">日文 (Japanese)</option>
+                                        <option value="Korean">韓文 (Korean)</option>
+                                        <option value="French">法文 (French)</option>
+                                        <option value="German">德文 (German)</option>
+                                        <option value="Spanish">西班牙文 (Spanish)</option>
+                                        <option value="Portuguese">葡萄牙文 (Portuguese)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Common Speed Slider -->
+                            <div class="form-group">
+                                <label class="form-label">語速調整 (Speed)</label>
+                                <div class="slider-container">
+                                    <input type="range" class="slider-input" id="ttsSpeed" min="0.5" max="2.0" step="0.1" value="1.0">
+                                    <span class="slider-value" id="ttsSpeedVal">1.0x</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- TEXT INPUT AREA -->
+                        <div class="card">
+                            <h3 class="card-header-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9"/>
+                                    <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                                </svg>
+                                輸入欲合成之文字
+                            </h3>
+
+                            <div class="text-input-wrap">
+                                <textarea class="text-area" id="ttsInput" placeholder="請在此輸入要轉換成語音的文字，字數限制 500 字..."></textarea>
+                                <div class="text-meta">
+                                    <span id="charCount">0 / 500 字</span>
+                                    <span>按 Ctrl+Enter 快速合成</span>
+                                </div>
+                            </div>
+
+                            <!-- Quick templates -->
+                            <div class="templates-row">
+                                <button class="template-btn" data-text="你好，這是一段由 IndexTTS 產生的語音，聽起來非常自然流暢。">👋 簡單問候</button>
+                                <button class="template-btn" data-text="這台伺服器部署了 IndexTTS、CosyVoice 還有 Qwen 三種不同的語音合成系統，方便大家進行測試與展示。">💻 系統介紹</button>
+                                <button class="template-btn" data-text="Hello! This is a multi-lingual speech synthesis test. It supports Chinese, English, Japanese, and many other languages.">🌎 英文測試 (English)</button>
+                                <button class="template-btn" data-text="台灣的高山風景非常優美，歡迎大家有空多來台灣遊玩，感受在地的人情味。">🏔 台灣腔測試 (IndexTW)</button>
+                            </div>
+
+                            <!-- Action button -->
+                            <button class="btn btn-primary" id="btnGenerate">
+                                <svg id="btnGenerateIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="5 3 19 12 5 21 5 3"/>
+                                </svg>
+                                <svg id="btnLoadingIcon" class="spinning-loader hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25"/>
+                                    <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor"/>
+                                </svg>
+                                <span id="btnGenerateText">開始語音合成</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Preview Player & History -->
+                    <div>
+                        <!-- PLAYBACK CARD -->
+                        <div class="player-card" id="playerCard">
+                            <div class="player-header">
+                                <div>
+                                    <div class="player-info-title" id="playerInfoModel">IndexTTS (Main)</div>
+                                    <div class="player-info-text" id="playerInfoText">生成的文字預覽...</div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button class="btn-player-action" id="btnDownload" title="下載 WAV 音檔">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="7 10 12 15 17 10"/>
+                                            <line x1="12" x2="12" y1="15" y2="3"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Waveform Visualization -->
+                            <div class="waveform-container" id="waveformContainer" title="點擊調整播放進度">
+                                <canvas class="waveform-canvas" id="waveformCanvas"></canvas>
+                            </div>
+
+                            <div class="player-controls">
+                                <button class="btn-player-circle" id="btnPlayPause">
+                                    <!-- Play Icon -->
+                                    <svg id="svgPlay" viewBox="0 0 24 24" fill="currentColor">
+                                        <polygon points="5 3 19 12 5 21 5 3"/>
+                                    </svg>
+                                    <!-- Pause Icon -->
+                                    <svg id="svgPause" class="hidden" viewBox="0 0 24 24" fill="currentColor">
+                                        <rect x="6" y="4" width="4" height="16"/>
+                                        <rect x="14" y="4" width="4" height="16"/>
+                                    </svg>
+                                </button>
+                                <div class="player-time-display">
+                                    <span id="playerCurrentTime">0:00</span>
+                                    <span>/</span>
+                                    <span id="playerDuration">0:00</span>
+                                </div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">
+                                    取樣率: <span id="playerSampleRate">16000</span>Hz
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HISTORY LOG -->
+                        <div>
+                            <div class="history-header">
+                                <h3 class="history-title">歷史合成紀錄</h3>
+                                <button class="btn-clear-all" id="btnClearHistory">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"/>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    </svg>
+                                    清除全部
+                                </button>
+                            </div>
+
+                            <!-- List -->
+                            <div class="history-list" id="historyList">
+                                <!-- Dynamically filled -->
+                            </div>
+
+                            <!-- Empty State -->
+                            <div class="empty-history" id="historyEmptyState">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                <span>尚無合成紀錄</span>
+                                <span style="font-size: 0.7rem; opacity: 0.7;">合成的語音檔將保存在瀏覽器 IndexedDB 中</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL: SETTINGS -->
+            <div class="tab-content-panel" id="panel-settings">
+                <div class="card">
+                    <h3 class="card-header-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                            <line x1="6" y1="6" x2="6.01" y1="6"/>
+                            <line x1="6" y1="18" x2="6.01" y1="18"/>
+                        </svg>
+                        API 連線與代理設定
+                    </h3>
+                    
+                    <div class="settings-grid">
+                        <div>
+                            <div class="form-group">
+                                <label class="form-label" for="settingHost">API 主機名稱 (Host)</label>
+                                <input type="text" class="form-input" id="settingHost" placeholder="talk-dev.aitago.tw">
+                                <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">所有 TTS 連接的預設主機。部署到 GitHub Pages 時將預設指向 talk-dev.aitago.tw。</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="settingProxy">CORS / HTTPS 代理路徑</label>
+                                <input type="text" class="form-input" id="settingProxy" placeholder="例如: https://cors-anywhere.herokuapp.com/">
+                                <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; display: block;">如果遭遇瀏覽器的 CORS 阻擋或混合內容封鎖，可在所有 API 請求前加上此代理路徑（留空則直連）。</span>
+                            </div>
+                            <button class="btn btn-secondary" style="width: auto; padding: 0.6rem 1.2rem; font-size: 0.85rem;" id="btnResetSettings">
+                                重設連線設定
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <div class="form-group">
+                                <label class="form-label">各服務自訂 URL</label>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label style="font-size: 0.75rem; color: var(--text-muted);">IndexTTS (Main) [8001]</label>
+                                    <input type="text" class="form-input" id="customUrl8001" style="padding: 0.5rem 0.75rem; font-size: 0.8rem;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label style="font-size: 0.75rem; color: var(--text-muted);">IndexTTS (TW) [8002]</label>
+                                    <input type="text" class="form-input" id="customUrl8002" style="padding: 0.5rem 0.75rem; font-size: 0.8rem;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label style="font-size: 0.75rem; color: var(--text-muted);">CosyVoice 3 [8003]</label>
+                                    <input type="text" class="form-input" id="customUrl8003" style="padding: 0.5rem 0.75rem; font-size: 0.8rem;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label style="font-size: 0.75rem; color: var(--text-muted);">Qwen TTS [8005]</label>
+                                    <input type="text" class="form-input" id="customUrl8005" style="padding: 0.5rem 0.75rem; font-size: 0.8rem;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-header-title">系統控制台資訊</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                        如果您需要重啟服務或切換模型，這裏有一些實用的 Curl 工具與指令指引。
+                    </p>
+                    
+                    <div style="background: rgba(0, 0, 0, 0.3); padding: 1rem; border-radius: var(--radius-sm); font-family: monospace; font-size: 0.75rem; border: 1px solid var(--border-color); color: var(--secondary); overflow-x: auto; white-space: pre;">
+# 手動切換 CosyVoice 3 模型
+curl -X POST "http://talk-dev.aitago.tw:8003/model/reload" \
+  -H "Content-Type: application/json" \
+  -d '{"model_name": "CosyVoice3-0.5B-Finetuned-1222"}'
+
+# 查詢當前 CosyVoice 3 模型載入狀態
+curl http://talk-dev.aitago.tw:8003/models</div>
+                </div>
+            </div>
+
+            <!-- PANEL: HELP -->
+            <div class="tab-content-panel" id="panel-help">
+                <div class="card">
+                    <h3 class="card-header-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="4" y1="9" x2="20" y2="9"/>
+                            <line x1="4" y1="15" x2="20" y2="15"/>
+                            <line x1="10" y1="3" x2="8" y2="21"/>
+                            <line x1="16" y1="3" x2="14" y2="21"/>
+                        </svg>
+                        語音模型指南與對照表
+                    </h3>
+
+                    <div class="help-section">
+                        <h4>1. IndexTTS 主模型 (8001 / 8002)</h4>
+                        <p>基於 VLLM 推理加速技術。預設音色庫十分豐富，生成速度最快。8002 專門為閩南腔及台灣國語優化，發音更具在地親切感。</p>
+                        <p><strong>語音複製 (tts_upload):</strong> 支援上傳包含人聲的聲音檔，並指定 Seed 種子，模型將極速學習該聲音特徵來發音。</p>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>2. CosyVoice 3 大模型 (8003)</h4>
+                        <p>阿里開源的最新高自然度語音複製框架。特色是強大的零樣本 (Zero-Shot) 克隆，僅需 3 秒以上的參考音檔即可產出高品質的擬真複製語音。</p>
+                        <p><strong>推理模式：</strong>
+                            SFT 模式（預訓練）需要模型預先封裝的音色名稱；而 Zero-Shot（複製）模式需要上傳參考語音並給予對應的文字逐字稿 (Prompt Text)，以達到最極致的聲音克隆表現。
+                        </p>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>3. Qwen TTS 大模型 (8005)</h4>
+                        <p>阿里 Qwen 家族研發的多語言語音合成大模型。自然度高，且對多國語言（中、英、日、韓、法、德等）的混合發音擁有優秀的表現力。</p>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>API 接口總覽</h4>
+                        <table class="help-table">
+                            <thead>
+                                <tr>
+                                    <th>模型項目</th>
+                                    <th>API 端點</th>
+                                    <th>核心請求格式</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>IndexTTS Preset</td>
+                                    <td>POST /audio/speech</td>
+                                    <td>JSON: <code>{"model":"tts-1","input":"文字","voice":"jay"}</code></td>
+                                </tr>
+                                <tr>
+                                    <td>IndexTTS Clone</td>
+                                    <td>POST /tts_upload</td>
+                                    <td>Query: <code>?text=文字&seed=8</code> + FormData (audio_file)</td>
+                                </tr>
+                                <tr>
+                                    <td>CosyVoice 3</td>
+                                    <td>POST /tts</td>
+                                    <td>FormData: <code>text, mode, speed, seed, speaker, prompt_audio, prompt_text</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Qwen TTS</td>
+                                    <td>POST /v1/audio/speech</td>
+                                    <td>JSON: <code>{"model":"...","input":"文字","voice":"hayley_normal","language":"Chinese"}</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- TOASTS -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- AUDIO ELEMENT -->
+    <audio id="globalAudioElement" style="display: none;"></audio>
+
+    <!-- MAIN JAVASCRIPT -->
+    <script>
+        // --- INDEXEDDB HELPER FOR PERSISTENT HISTORY ---
+        class HistoryDB {
+            constructor() {
+                this.dbName = '360TTSHubDB';
+                this.dbVersion = 1;
+                this.db = null;
+            }
+
+            init() {
+                return new Promise((resolve) => {
+                    const request = indexedDB.open(this.dbName, this.dbVersion);
+                    
+                    request.onerror = () => {
+                        console.warn('IndexedDB unavailable, falling back to memory history');
+                        resolve(false);
+                    };
+
+                    request.onsuccess = (e) => {
+                        this.db = e.target.result;
+                        resolve(true);
+                    };
+
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('history')) {
+                            const store = db.createObjectStore('history', { keyPath: 'id' });
+                            store.createIndex('timestamp', 'timestamp', { unique: false });
+                        }
+                    };
+                });
+            }
+
+            save(item) {
+                return new Promise((resolve) => {
+                    if (!this.db) return resolve(false);
+                    const tx = this.db.transaction(['history'], 'readwrite');
+                    const store = tx.objectStore('history');
+                    store.put(item);
+                    tx.oncomplete = () => resolve(true);
+                    tx.onerror = () => resolve(false);
+                });
+            }
+
+            getAll() {
+                return new Promise((resolve) => {
+                    if (!this.db) return resolve([]);
+                    const tx = this.db.transaction(['history'], 'readonly');
+                    const store = tx.objectStore('history');
+                    const request = store.getAll();
+                    request.onsuccess = () => {
+                        const items = request.result.sort((a, b) => b.timestamp - a.timestamp);
+                        resolve(items);
+                    };
+                    request.onerror = () => resolve([]);
+                });
+            }
+
+            delete(id) {
+                return new Promise((resolve) => {
+                    if (!this.db) return resolve(false);
+                    const tx = this.db.transaction(['history'], 'readwrite');
+                    const store = tx.objectStore('history');
+                    store.delete(id);
+                    tx.oncomplete = () => resolve(true);
+                });
+            }
+
+            clear() {
+                return new Promise((resolve) => {
+                    if (!this.db) return resolve(false);
+                    const tx = this.db.transaction(['history'], 'readwrite');
+                    const store = tx.objectStore('history');
+                    store.clear();
+                    tx.oncomplete = () => resolve(true);
+                });
+            }
+        }
+
+        // --- APP CONTROLLER ---
+        class TTSApp {
+            constructor() {
+                this.db = new HistoryDB();
+                this.historyItems = [];
+                
+                // Active State variables
+                this.selectedModel = 'index_main';
+                this.activeSubmodes = {
+                    index: 'preset',
+                    cosyvoice: 'sft'
+                };
+                
+                // Connection Configurations
+                this.config = {
+                    host: '',
+                    proxy: '',
+                    urls: {
+                        index_main: '',
+                        index_tw: '',
+                        cosyvoice: '',
+                        qwen: ''
+                    }
+                };
+
+                // Audio properties
+                this.currentAudioBlob = null;
+                this.currentAudioBuffer = null;
+                this.audioCtx = null;
+                this.audioElement = document.getElementById('globalAudioElement');
+                this.isPlaying = false;
+                this.playbackTimer = null;
+
+                // File Upload Data
+                this.uploadedFiles = {
+                    index: null,
+                    cosyvoice: null
+                };
+
+                this.init();
+            }
+
+            async init() {
+                // Initialize settings
+                this.loadSettings();
+                
+                // Show warning banner if https
+                if (window.location.protocol === 'https:') {
+                    document.getElementById('mixedContentWarning').style.display = 'flex';
+                }
+
+                // Initialize IndexedDB
+                await this.db.init();
+                this.historyItems = await this.db.getAll();
+                this.renderHistory();
+
+                // Bind UI Events
+                this.bindUI();
+                this.checkAllServicesHealth();
+                this.setupWaveformCanvas();
+                
+                // Auto fetch voices if services online
+                setTimeout(() => {
+                    this.fetchIndexVoices('index_main');
+                    this.fetchIndexVoices('index_tw');
+                    this.fetchCosyVoiceMetadata();
+                }, 1000);
+            }
+
+            loadSettings() {
+                // Determine default API host
+                // If running on local or github pages, point default host to talk-dev.aitago.tw
+                let defaultHost = 'talk-dev.aitago.tw';
+                if (window.location.hostname !== '' && 
+                    window.location.hostname !== 'localhost' && 
+                    window.location.hostname !== '127.0.0.1' && 
+                    !window.location.hostname.includes('github.io')) {
+                    defaultHost = window.location.hostname;
+                }
+
+                this.config.host = localStorage.getItem('tts_host') || defaultHost;
+                this.config.proxy = localStorage.getItem('tts_proxy') || '';
+                
+                this.config.urls.index_main = localStorage.getItem('tts_url_8001') || `http://${this.config.host}:8001`;
+                this.config.urls.index_tw = localStorage.getItem('tts_url_8002') || `http://${this.config.host}:8002`;
+                this.config.urls.cosyvoice = localStorage.getItem('tts_url_8003') || `http://${this.config.host}:8003`;
+                this.config.urls.qwen = localStorage.getItem('tts_url_8005') || `http://${this.config.host}:8005`;
+
+                // Update settings UI fields
+                document.getElementById('settingHost').value = this.config.host;
+                document.getElementById('settingProxy').value = this.config.proxy;
+                document.getElementById('customUrl8001').value = this.config.urls.index_main;
+                document.getElementById('customUrl8002').value = this.config.urls.index_tw;
+                document.getElementById('customUrl8003').value = this.config.urls.cosyvoice;
+                document.getElementById('customUrl8005').value = this.config.urls.qwen;
+            }
+
+            saveSettings() {
+                this.config.host = document.getElementById('settingHost').value.trim() || 'talk-dev.aitago.tw';
+                this.config.proxy = document.getElementById('settingProxy').value.trim();
+                
+                this.config.urls.index_main = document.getElementById('customUrl8001').value.trim() || `http://${this.config.host}:8001`;
+                this.config.urls.index_tw = document.getElementById('customUrl8002').value.trim() || `http://${this.config.host}:8002`;
+                this.config.urls.cosyvoice = document.getElementById('customUrl8003').value.trim() || `http://${this.config.host}:8003`;
+                this.config.urls.qwen = document.getElementById('customUrl8005').value.trim() || `http://${this.config.host}:8005`;
+
+                localStorage.setItem('tts_host', this.config.host);
+                localStorage.setItem('tts_proxy', this.config.proxy);
+                localStorage.setItem('tts_url_8001', this.config.urls.index_main);
+                localStorage.setItem('tts_url_8002', this.config.urls.index_tw);
+                localStorage.setItem('tts_url_8003', this.config.urls.cosyvoice);
+                localStorage.setItem('tts_url_8005', this.config.urls.qwen);
+
+                this.showToast('success', '設定已儲存', 'API 連線配置更新成功，開始重新檢測狀態...');
+                this.checkAllServicesHealth();
+                this.fetchIndexVoices('index_main');
+                this.fetchIndexVoices('index_tw');
+                this.fetchCosyVoiceMetadata();
+            }
+
+            resetSettings() {
+                localStorage.removeItem('tts_host');
+                localStorage.removeItem('tts_proxy');
+                localStorage.removeItem('tts_url_8001');
+                localStorage.removeItem('tts_url_8002');
+                localStorage.removeItem('tts_url_8003');
+                localStorage.removeItem('tts_url_8005');
+                this.loadSettings();
+                this.showToast('success', '設定已重設', '已還原至預設的 API 端口配置');
+                this.checkAllServicesHealth();
+            }
+
+            // Get finalized endpoint url, taking proxy into account
+            getEndpoint(serviceName, path) {
+                let baseUrl = this.config.urls[serviceName];
+                // strip trailing slash
+                if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
+                
+                let targetUrl = baseUrl + path;
+                if (this.config.proxy) {
+                    return this.config.proxy + targetUrl;
+                }
+                return targetUrl;
+            }
+
+            bindUI() {
+                // Navigation tabs switcher
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.tab-content-panel').forEach(p => p.classList.remove('active'));
+                        
+                        btn.classList.add('active');
+                        document.getElementById(`panel-${btn.dataset.tab}`).classList.add('active');
+                    });
+                });
+
+                // Settings change events
+                const settingsInputs = ['settingHost', 'settingProxy', 'customUrl8001', 'customUrl8002', 'customUrl8003', 'customUrl8005'];
+                settingsInputs.forEach(id => {
+                    document.getElementById(id).addEventListener('change', () => this.saveSettings());
+                });
+
+                document.getElementById('btnResetSettings').addEventListener('click', () => this.resetSettings());
+
+                // Model Card Selector
+                document.querySelectorAll('.model-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                        this.selectedModel = card.dataset.model;
+                        this.updateModelOptionsUI();
+                    });
+                });
+
+                // Sub-mode selectors (Preset vs Clone / SFT vs ZeroShot)
+                document.querySelectorAll('.sub-mode-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const parentGroup = e.target.closest('.model-options-group');
+                        parentGroup.querySelectorAll('.sub-mode-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        
+                        const groupName = parentGroup.id === 'options-index' ? 'index' : 'cosyvoice';
+                        const submode = btn.dataset.submode;
+                        this.activeSubmodes[groupName] = submode;
+
+                        if (groupName === 'index') {
+                            document.getElementById('index-preset-fields').classList.toggle('hidden', submode !== 'preset');
+                            document.getElementById('index-clone-fields').classList.toggle('hidden', submode !== 'clone');
+                        } else {
+                            document.getElementById('cosy-sft-fields').classList.toggle('hidden', submode !== 'sft');
+                            document.getElementById('cosy-zeroshot-fields').classList.toggle('hidden', submode !== 'zero_shot');
+                        }
+                    });
+                });
+
+                // Speed sliders
+                const speedSlider = document.getElementById('ttsSpeed');
+                const speedVal = document.getElementById('ttsSpeedVal');
+                speedSlider.addEventListener('input', (e) => {
+                    speedVal.textContent = parseFloat(e.target.value).toFixed(1) + 'x';
+                });
+
+                // Textarea auto typing on quick templates click
+                document.querySelectorAll('.template-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const ttsInput = document.getElementById('ttsInput');
+                        ttsInput.value = btn.dataset.text;
+                        this.updateCharCount();
+                    });
+                });
+
+                // Char counter
+                document.getElementById('ttsInput').addEventListener('input', () => this.updateCharCount());
+
+                // Keyboard quick trigger (Ctrl + Enter)
+                document.getElementById('ttsInput').addEventListener('keydown', (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                        e.preventDefault();
+                        this.generateTTS();
+                    }
+                });
+
+                // Seed randomize buttons
+                document.getElementById('indexRandomSeedBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.getElementById('indexSeed').value = Math.floor(Math.random() * 1000000);
+                });
+
+                document.getElementById('cosyRandomSeedBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // CosyVoice seed -1 is allowed
+                    const rand = Math.floor(Math.random() * 1000000);
+                    document.getElementById('cosySeed').value = Math.random() > 0.1 ? rand : -1;
+                });
+
+                // Upload events for IndexTTS
+                this.setupDragAndDrop('indexUploadZone', 'indexActiveFileCard', 'indexFileName', 'indexFileSize', 'index', 'indexRemoveFile');
+                // Upload events for CosyVoice 3
+                this.setupDragAndDrop('cosyUploadZone', 'cosyActiveFileCard', 'cosyFileName', 'cosyFileSize', 'cosyvoice', 'cosyRemoveFile');
+
+                // Generate Button click
+                document.getElementById('btnGenerate').addEventListener('click', () => this.generateTTS());
+
+                // Playback Button click
+                document.getElementById('btnPlayPause').addEventListener('click', () => this.togglePlayback());
+                document.getElementById('btnDownload').addEventListener('click', () => this.downloadAudio());
+
+                // Clear History Button
+                document.getElementById('btnClearHistory').addEventListener('click', () => this.clearHistory());
+
+                // CosyVoice Reload Model
+                document.getElementById('cosyReloadModelBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.reloadCosyVoiceModel();
+                });
+            }
+
+            updateCharCount() {
+                const text = document.getElementById('ttsInput').value;
+                document.getElementById('charCount').textContent = `${text.length} / 500 字`;
+            }
+
+            updateModelOptionsUI() {
+                document.getElementById('options-index').classList.toggle('hidden', 
+                    this.selectedModel !== 'index_main' && this.selectedModel !== 'index_tw');
+                document.getElementById('options-qwen').classList.toggle('hidden', this.selectedModel !== 'qwen');
+                document.getElementById('options-cosyvoice').classList.toggle('hidden', this.selectedModel !== 'cosyvoice');
+                
+                // Auto switch voice select list when switching index_main / index_tw
+                if (this.selectedModel === 'index_main') {
+                    this.populateIndexVoicesUI('index_main');
+                } else if (this.selectedModel === 'index_tw') {
+                    this.populateIndexVoicesUI('index_tw');
+                }
+            }
+
+            // DRAG AND DROP FILE UPLOAD HELPER
+            setupDragAndDrop(zoneId, cardId, nameId, sizeId, fileKey, removeBtnId) {
+                const zone = document.getElementById(zoneId);
+                const fileCard = document.getElementById(cardId);
+                const fileName = document.getElementById(nameId);
+                const fileSize = document.getElementById(sizeId);
+                const removeBtn = document.getElementById(removeBtnId);
+                
+                // Create an invisible file input
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = 'audio/wav,audio/mp3,audio/mpeg';
+                fileInput.style.display = 'none';
+                zone.appendChild(fileInput);
+
+                zone.addEventListener('click', () => fileInput.click());
+
+                fileInput.addEventListener('change', (e) => {
+                    if (e.target.files.length > 0) {
+                        this.handleSelectedFile(e.target.files[0], zone, fileCard, fileName, fileSize, fileKey);
+                    }
+                });
+
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('drag-over');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    if (e.dataTransfer.files.length > 0) {
+                        this.handleSelectedFile(e.dataTransfer.files[0], zone, fileCard, fileName, fileSize, fileKey);
+                    }
+                });
+
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.uploadedFiles[fileKey] = null;
+                    fileInput.value = '';
+                    fileCard.classList.add('hidden');
+                    zone.classList.remove('hidden');
+                });
+            }
+
+            handleSelectedFile(file, zone, card, nameEl, sizeEl, fileKey) {
+                // Check if file is audio
+                if (!file.type.startsWith('audio/')) {
+                    this.showToast('error', '格式錯誤', '請選擇語音音檔格式 (.wav 或 .mp3)');
+                    return;
+                }
+
+                // Check size (limit to 10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    this.showToast('error', '檔案過大', '語音檔案大小限制為 10MB 以內');
+                    return;
+                }
+
+                this.uploadedFiles[fileKey] = file;
+                nameEl.textContent = file.name;
+                sizeEl.textContent = (file.size / 1024).toFixed(1) + ' KB';
+                
+                zone.classList.add('hidden');
+                card.classList.remove('hidden');
+                this.showToast('success', '音檔上傳成功', `已匯入 "${file.name}"`);
+            }
+
+            // --- HEALTH CHECKS ---
+            async checkAllServicesHealth() {
+                this.checkServiceHealth('index_main', '/health');
+                this.checkServiceHealth('index_tw', '/health');
+                this.checkServiceHealth('cosyvoice', '/health');
+                this.checkServiceHealth('qwen', '/health');
+            }
+
+            async checkServiceHealth(serviceKey, path) {
+                const card = document.querySelector(`.status-card[data-service="${serviceKey}"]`);
+                if (!card) return;
+                const badge = card.querySelector('.status-badge');
+                const dot = badge.querySelector('.status-dot');
+                const text = badge.querySelector('span:last-child');
+
+                badge.className = 'status-badge checking';
+                dot.className = 'status-dot pulsate';
+                text.textContent = '檢測中';
+
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 4000);
+                    
+                    const url = this.getEndpoint(serviceKey, path);
+                    const response = await fetch(url, { 
+                        method: 'GET',
+                        signal: controller.signal 
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (response.ok) {
+                        badge.className = 'status-badge online';
+                        dot.className = 'status-dot';
+                        text.textContent = '線上';
+                    } else {
+                        throw new Error('Not OK');
+                    }
+                } catch (error) {
+                    badge.className = 'status-badge offline';
+                    dot.className = 'status-dot';
+                    text.textContent = '離線';
+                }
+            }
+
+            // --- FETCH METADATA DYNAMICALLY ---
+            
+            // Available voices for IndexTTS (8001 / 8002)
+            async fetchIndexVoices(serviceKey) {
+                try {
+                    const url = this.getEndpoint(serviceKey, '/audio/voices');
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const data = await response.json();
+                        // Cache voices in memory
+                        this[`voices_${serviceKey}`] = data;
+                        if (this.selectedModel === serviceKey) {
+                            this.populateIndexVoicesUI(serviceKey);
+                        }
+                    }
+                } catch (err) {
+                    console.warn(`Failed to fetch voices for ${serviceKey}`, err);
+                }
+            }
+
+            populateIndexVoicesUI(serviceKey) {
+                const select = document.getElementById('indexVoice');
+                const voices = this[`voices_${serviceKey}`] || 
+                    (serviceKey === 'index_tw' ? ['jay_klee', 'gentle_female', 'professional_male'] : ['jay', 'gentle_female', 'professional_male']);
+                
+                select.innerHTML = '';
+                voices.forEach(voice => {
+                    const opt = document.createElement('option');
+                    opt.value = voice;
+                    // Prettify name
+                    let displayName = voice.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                    if (voice === 'jay') displayName += ' (周董腔 - 推薦)';
+                    if (voice === 'jay_klee') displayName += ' (Klee/閩南腔 - 推薦)';
+                    
+                    opt.textContent = displayName;
+                    select.appendChild(opt);
+                });
+            }
+
+            // CosyVoice models & speakers lists
+            async fetchCosyVoiceMetadata() {
+                try {
+                    const modelsUrl = this.getEndpoint('cosyvoice', '/models');
+                    const response = await fetch(modelsUrl);
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.populateCosyVoiceModelsUI(data);
+                    }
+                } catch (err) {
+                    console.warn("Failed to fetch CosyVoice models metadata", err);
+                }
+            }
+
+            populateCosyVoiceModelsUI(data) {
+                const select = document.getElementById('cosyModel');
+                select.innerHTML = '';
+                
+                const models = data.models || [];
+                models.forEach(model => {
+                    const opt = document.createElement('option');
+                    opt.value = model.name;
+                    opt.textContent = model.name + (model.type === 'finetune' ? ' (已精調)' : ' (基礎)');
+                    if (data.current_model === model.name) {
+                        opt.selected = true;
+                    }
+                    select.appendChild(opt);
+                });
+
+                // Populate speakers
+                const spkSelect = document.getElementById('cosySpeaker');
+                spkSelect.innerHTML = '';
+                const speakers = data.speakers || [''];
+                
+                // Filter out empty string or add a default
+                speakers.forEach(spk => {
+                    const opt = document.createElement('option');
+                    opt.value = spk;
+                    opt.textContent = spk === '' ? '預設語音 (Default)' : spk;
+                    spkSelect.appendChild(opt);
+                });
+            }
+
+            async reloadCosyVoiceModel() {
+                const modelName = document.getElementById('cosyModel').value;
+                const btn = document.getElementById('cosyReloadModelBtn');
+                btn.disabled = true;
+                btn.textContent = '載入中...';
+
+                try {
+                    const url = this.getEndpoint('cosyvoice', '/model/reload');
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ model_name: modelName })
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        this.showToast('success', '載入成功', `已切換模型至 ${modelName}`);
+                        // Refresh speakers list
+                        this.populateCosyVoiceModelsUI({
+                            models: [{name: modelName}],
+                            current_model: modelName,
+                            speakers: result.speakers || ['']
+                        });
+                    } else {
+                        throw new Error('Reload failed');
+                    }
+                } catch (err) {
+                    this.showToast('error', '載入失敗', '伺服器切換模型錯誤，請稍候重試');
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = '載入/切換';
+                }
+            }
+
+            // --- GENERATE SPEECH CORE ---
+            async generateTTS() {
+                const text = document.getElementById('ttsInput').value.trim();
+                if (!text) {
+                    this.showToast('error', '輸入為空', '請先輸入想要合成為語音的文字內容');
+                    return;
+                }
+
+                // Check text length limit
+                if (text.length > 500) {
+                    this.showToast('error', '字數超限', '請將合成字數控制在 500 字以內');
+                    return;
+                }
+
+                // UI loading state
+                const btn = document.getElementById('btnGenerate');
+                const btnText = document.getElementById('btnGenerateText');
+                const iconGen = document.getElementById('btnGenerateIcon');
+                const iconLoad = document.getElementById('btnLoadingIcon');
+                
+                btn.disabled = true;
+                btnText.textContent = '語音合成中...';
+                iconGen.classList.add('hidden');
+                iconLoad.classList.remove('hidden');
+
+                // Speed value common to all models
+                const speed = parseFloat(document.getElementById('ttsSpeed').value);
+
+                try {
+                    let audioBlob = null;
+                    let voiceName = '';
+                    let modelName = '';
+                    let endpoint = '';
+                    let fetchOptions = {};
+
+                    // Handle different model requirements
+                    if (this.selectedModel === 'index_main' || this.selectedModel === 'index_tw') {
+                        const isMain = this.selectedModel === 'index_main';
+                        const submode = this.activeSubmodes.index;
+                        modelName = isMain ? 'IndexTTS (Main)' : 'IndexTTS (TW)';
+                        const serviceKey = isMain ? 'index_main' : 'index_tw';
+
+                        if (submode === 'preset') {
+                            voiceName = document.getElementById('indexVoice').value;
+                            endpoint = this.getEndpoint(serviceKey, '/audio/speech');
+                            fetchOptions = {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    model: 'tts-1',
+                                    input: text,
+                                    voice: voiceName,
+                                    speed: speed
+                                })
+                            };
+                        } else {
+                            // Voice Cloning (tts_upload)
+                            const file = this.uploadedFiles.index;
+                            if (!file) {
+                                throw new Error('請先選擇上傳一段聲音克隆的參考音檔！');
+                            }
+                            const seed = parseInt(document.getElementById('indexSeed').value) || 8;
+                            voiceName = `極速克隆 (Seed: ${seed})`;
+                            
+                            endpoint = this.getEndpoint(serviceKey, `/tts_upload?text=${encodeURIComponent(text)}&seed=${seed}`);
+                            const formData = new FormData();
+                            formData.append('audio_file', file);
+                            
+                            fetchOptions = {
+                                method: 'POST',
+                                body: formData
+                            };
+                        }
+
+                    } else if (this.selectedModel === 'cosyvoice') {
+                        const submode = this.activeSubmodes.cosyvoice;
+                        modelName = 'CosyVoice 3';
+                        endpoint = this.getEndpoint('cosyvoice', '/tts');
+                        const seed = parseInt(document.getElementById('cosySeed').value) || -1;
+                        
+                        const formData = new FormData();
+                        formData.append('text', text);
+                        formData.append('mode', submode);
+                        formData.append('speed', speed);
+                        formData.append('seed', seed);
+                        formData.append('stream', 'false');
+
+                        if (submode === 'sft') {
+                            const spk = document.getElementById('cosySpeaker').value;
+                            voiceName = spk || '預設音色';
+                            formData.append('speaker', spk);
+                        } else {
+                            // Zero-Shot Cloning
+                            const file = this.uploadedFiles.cosyvoice;
+                            const promptText = document.getElementById('cosyPromptText').value.trim();
+                            if (!file) {
+                                throw new Error('Zero-Shot 模式需要上傳參考音檔！');
+                            }
+                            if (!promptText) {
+                                throw new Error('Zero-Shot 模式需要填寫參考音檔對應文字稿！');
+                            }
+                            voiceName = `Zero-Shot (音色: ${file.name})`;
+                            formData.append('prompt_audio', file);
+                            formData.append('prompt_text', promptText);
+                        }
+
+                        fetchOptions = {
+                            method: 'POST',
+                            body: formData
+                        };
+
+                    } else if (this.selectedModel === 'qwen') {
+                        modelName = 'Qwen TTS';
+                        voiceName = document.getElementById('qwenVoice').value;
+                        const lang = document.getElementById('qwenLang').value;
+                        
+                        endpoint = this.getEndpoint('qwen', '/v1/audio/speech');
+                        fetchOptions = {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                model: 'Qwen/Qwen3-TTS-12Hz-1.7B-Base',
+                                input: text,
+                                voice: voiceName,
+                                language: lang === 'Auto' ? null : lang,
+                                speed: speed
+                            })
+                        };
+                    }
+
+                    // SEND REQUEST
+                    const response = await fetch(endpoint, fetchOptions);
+                    if (!response.ok) {
+                        let errorMsg = 'TTS 伺服器異常或格式不支持';
+                        try {
+                            const errJson = await response.json();
+                            errorMsg = errJson.detail || errJson.error || errorMsg;
+                        } catch (e) {}
+                        throw new Error(`HTTP ${response.status}: ${errorMsg}`);
+                    }
+
+                    audioBlob = await response.blob();
+                    
+                    this.showToast('success', '合成完成', `音訊成功產生 (${(audioBlob.size/1024).toFixed(1)} KB)`);
+                    
+                    // Handle and visualize audio
+                    await this.loadAudioToPlayer(audioBlob, text, modelName, voiceName);
+
+                    // Save to history
+                    const historyItem = {
+                        id: 'tts_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+                        timestamp: Date.now(),
+                        model: modelName,
+                        voice: voiceName,
+                        text: text,
+                        audioData: audioBlob
+                    };
+                    await this.db.save(historyItem);
+                    this.historyItems.unshift(historyItem);
+                    this.renderHistory();
+
+                } catch (error) {
+                    console.error('TTS Generation Error:', error);
+                    this.showToast('error', '語音合成失敗', error.message || error);
+                } finally {
+                    btn.disabled = false;
+                    btnText.textContent = '開始語音合成';
+                    iconGen.classList.remove('hidden');
+                    iconLoad.classList.add('hidden');
+                }
+            }
+
+            // --- AUDIO PLAYBACK CONTROL ---
+            async loadAudioToPlayer(blob, text, model, voice) {
+                // Stop current playing
+                this.stopPlayback();
+
+                this.currentAudioBlob = blob;
+                const audioUrl = URL.createObjectURL(blob);
+                this.audioElement.src = audioUrl;
+
+                // Update UI titles
+                document.getElementById('playerCard').style.display = 'block';
+                document.getElementById('playerInfoModel').textContent = model;
+                document.getElementById('playerInfoText').textContent = `"${text}"`;
+                document.getElementById('playerInfoText').title = text;
+
+                // Decode audio for waveform visualization
+                try {
+                    if (!this.audioCtx) {
+                        this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    
+                    // read arraybuffer
+                    const arrayBuffer = await blob.arrayBuffer();
+                    
+                    // Need to copy because decodeAudioData consumes the buffer
+                    const bufferCopy = arrayBuffer.slice(0);
+                    
+                    // Decode audio data
+                    this.audioCtx.decodeAudioData(bufferCopy, (buffer) => {
+                        this.currentAudioBuffer = buffer;
+                        document.getElementById('playerSampleRate').textContent = buffer.sampleRate;
+                        this.drawStaticWaveform();
+                    }, (err) => {
+                        console.warn('Could not decode audio data for visualizer', err);
+                        // Draw empty waveform
+                        this.drawEmptyWaveform();
+                    });
+
+                } catch (e) {
+                    console.warn('AudioContext failed to initialize', e);
+                }
+
+                // Autoplay
+                this.audioElement.onloadedmetadata = () => {
+                    document.getElementById('playerDuration').textContent = this.formatTime(this.audioElement.duration);
+                    document.getElementById('playerCurrentTime').textContent = '0:00';
+                    this.playAudio();
+                };
+
+                this.audioElement.onended = () => {
+                    this.stopPlayback();
+                };
+            }
+
+            playAudio() {
+                this.isPlaying = true;
+                this.audioElement.play();
+                document.getElementById('svgPlay').classList.add('hidden');
+                document.getElementById('svgPause').classList.remove('hidden');
+                
+                // Start drawing timer
+                this.startPlaybackTimer();
+            }
+
+            pauseAudio() {
+                this.isPlaying = false;
+                this.audioElement.pause();
+                document.getElementById('svgPlay').classList.remove('hidden');
+                document.getElementById('svgPause').classList.add('hidden');
+                this.stopPlaybackTimer();
+            }
+
+            togglePlayback() {
+                if (!this.currentAudioBlob) return;
+                if (this.isPlaying) {
+                    this.pauseAudio();
+                } else {
+                    this.playAudio();
+                }
+            }
+
+            stopPlayback() {
+                this.pauseAudio();
+                this.audioElement.currentTime = 0;
+                document.getElementById('playerCurrentTime').textContent = '0:00';
+                this.drawStaticWaveform(); // redraw clean waveform
+            }
+
+            startPlaybackTimer() {
+                this.stopPlaybackTimer();
+                const canvas = document.getElementById('waveformCanvas');
+                
+                const update = () => {
+                    if (!this.isPlaying) return;
+                    
+                    // Update progress display
+                    const timeEl = document.getElementById('playerCurrentTime');
+                    timeEl.textContent = this.formatTime(this.audioElement.currentTime);
+                    
+                    // Render waveform with active progression
+                    const progress = this.audioElement.currentTime / this.audioElement.duration;
+                    this.drawStaticWaveform(progress);
+
+                    this.playbackTimer = requestAnimationFrame(update);
+                };
+                this.playbackTimer = requestAnimationFrame(update);
+            }
+
+            stopPlaybackTimer() {
+                if (this.playbackTimer) {
+                    cancelAnimationFrame(this.playbackTimer);
+                    this.playbackTimer = null;
+                }
+            }
+
+            downloadAudio() {
+                if (!this.currentAudioBlob) return;
+                const url = URL.createObjectURL(this.currentAudioBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `tts_${Date.now()}.wav`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            // --- WAVEFORM CANVAS DRAWING ---
+            setupWaveformCanvas() {
+                const canvas = document.getElementById('waveformCanvas');
+                const container = document.getElementById('waveformContainer');
+
+                // Make canvas responsive
+                const resize = () => {
+                    const rect = container.getBoundingClientRect();
+                    canvas.width = rect.width * window.devicePixelRatio;
+                    canvas.height = rect.height * window.devicePixelRatio;
+                    canvas.style.width = '100%';
+                    canvas.style.height = '100%';
+                    
+                    if (this.currentAudioBuffer) {
+                        const progress = this.audioElement.currentTime / (this.audioElement.duration || 1);
+                        this.drawStaticWaveform(progress);
+                    } else {
+                        this.drawEmptyWaveform();
+                    }
+                };
+
+                window.addEventListener('resize', resize);
+                // Call once initially
+                setTimeout(resize, 200);
+
+                // Clicking on waveform seeks the audio
+                container.addEventListener('click', (e) => {
+                    if (!this.audioElement.duration || !this.currentAudioBlob) return;
+                    const rect = container.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const pct = clickX / rect.width;
+                    
+                    this.audioElement.currentTime = pct * this.audioElement.duration;
+                    document.getElementById('playerCurrentTime').textContent = this.formatTime(this.audioElement.currentTime);
+                    this.drawStaticWaveform(pct);
+                });
+            }
+
+            drawStaticWaveform(progress = 0) {
+                const canvas = document.getElementById('waveformCanvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                const centerY = height / 2;
+
+                ctx.clearRect(0, 0, width, height);
+
+                if (!this.currentAudioBuffer) return;
+
+                // Extract data
+                const channelData = this.currentAudioBuffer.getChannelData(0);
+                
+                // Draw columns (bars)
+                const barWidth = 3 * window.devicePixelRatio;
+                const barGap = 2 * window.devicePixelRatio;
+                const totalBarWidth = barWidth + barGap;
+                const barCount = Math.floor(width / totalBarWidth);
+                const samplesPerBar = Math.floor(channelData.length / barCount);
+
+                // Gradients for styling
+                // Gray/Dark for unplayed
+                const unplayedGrad = ctx.createLinearGradient(0, 0, 0, height);
+                unplayedGrad.addColorStop(0, '#4b5563');
+                unplayedGrad.addColorStop(1, '#1f2937');
+
+                // Violet gradient for played
+                const playedGrad = ctx.createLinearGradient(0, 0, 0, height);
+                playedGrad.addColorStop(0, '#8b5cf6');
+                playedGrad.addColorStop(0.5, '#06b6d4');
+                playedGrad.addColorStop(1, '#7c3aed');
+
+                for (let i = 0; i < barCount; i++) {
+                    let maxVal = 0;
+                    const startSample = i * samplesPerBar;
+                    const endSample = Math.min(startSample + samplesPerBar, channelData.length);
+                    
+                    // Get peak value in this segment
+                    for (let j = startSample; j < endSample; j++) {
+                        const val = Math.abs(channelData[j]);
+                        if (val > maxVal) maxVal = val;
+                    }
+                    
+                    // Normalize bar height
+                    // Scale it so it fills about 80% of canvas max
+                    let barHeight = maxVal * height * 0.9;
+                    if (barHeight < 3) barHeight = 3; // Minimum visible bar
+
+                    const x = i * totalBarWidth;
+                    const y = centerY - barHeight / 2;
+
+                    // Check if this bar has been played
+                    const barProgress = i / barCount;
+                    if (barProgress <= progress) {
+                        ctx.fillStyle = playedGrad;
+                    } else {
+                        ctx.fillStyle = unplayedGrad;
+                    }
+
+                    // Draw rounded bar
+                    this.drawRoundRect(ctx, x, y, barWidth, barHeight, 2 * window.devicePixelRatio);
+                }
+            }
+
+            drawEmptyWaveform() {
+                const canvas = document.getElementById('waveformCanvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+                const centerY = height / 2;
+
+                ctx.clearRect(0, 0, width, height);
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 2 * window.devicePixelRatio;
+                ctx.beginPath();
+                ctx.moveTo(0, centerY);
+                ctx.lineTo(width, centerY);
+                ctx.stroke();
+            }
+
+            drawRoundRect(ctx, x, y, width, height, radius) {
+                if (height < 2 * radius) radius = height / 2;
+                if (width < 2 * radius) radius = width / 2;
+                ctx.beginPath();
+                ctx.moveTo(x + radius, y);
+                ctx.arcTo(x + width, y, x + width, y + height, radius);
+                ctx.arcTo(x + width, y + height, x, y + height, radius);
+                ctx.arcTo(x, y + height, x, y, radius);
+                ctx.arcTo(x, y, x + width, y, radius);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // --- HISTORY LOG HANDLING ---
+            renderHistory() {
+                const container = document.getElementById('historyList');
+                const empty = document.getElementById('historyEmptyState');
+
+                container.innerHTML = '';
+
+                if (this.historyItems.length === 0) {
+                    empty.style.display = 'flex';
+                    return;
+                }
+
+                empty.style.display = 'none';
+
+                this.historyItems.forEach(item => {
+                    const date = new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.dataset.id = item.id;
+                    
+                    div.innerHTML = `
+                        <div class="history-item-top">
+                            <div class="history-tag-row">
+                                <span class="history-tag tag-model">${item.model}</span>
+                                <span class="history-tag tag-voice">${item.voice}</span>
+                            </div>
+                            <span class="history-time">${date}</span>
+                        </div>
+                        <div class="history-text">"${item.text}"</div>
+                        <div class="history-actions">
+                            <div class="history-play-row">
+                                <button class="btn-history-play" title="播放" onclick="app.playHistoryItem('${item.id}')">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <polygon points="5 3 19 12 5 21 5 3"/>
+                                    </svg>
+                                </button>
+                                <span style="font-size: 0.7rem; color: var(--text-muted);">
+                                    ${(item.audioData.size / 1024).toFixed(1)} KB
+                                </span>
+                            </div>
+                            <div style="display: flex; gap: 0.25rem;">
+                                <button class="btn-history-action" title="下載" onclick="app.downloadHistoryItem('${item.id}')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="7 10 12 15 17 10"/>
+                                        <line x1="12" x2="12" y1="15" y2="3"/>
+                                    </svg>
+                                </button>
+                                <button class="btn-history-action btn-delete" title="刪除" onclick="app.deleteHistoryItem('${item.id}')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"/>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+
+            async playHistoryItem(id) {
+                const item = this.historyItems.find(h => h.id === id);
+                if (item) {
+                    // Remove playing class from other elements
+                    document.querySelectorAll('.history-item').forEach(el => el.classList.remove('playing'));
+                    const itemEl = document.querySelector(`.history-item[data-id="${id}"]`);
+                    if (itemEl) itemEl.classList.add('playing');
+                    
+                    this.loadAudioToPlayer(item.audioData, item.text, item.model, item.voice);
+                }
+            }
+
+            downloadHistoryItem(id) {
+                const item = this.historyItems.find(h => h.id === id);
+                if (item) {
+                    const url = URL.createObjectURL(item.audioData);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `tts_${id}.wav`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+            }
+
+            async deleteHistoryItem(id) {
+                this.historyItems = this.historyItems.filter(h => h.id !== id);
+                await this.db.delete(id);
+                this.renderHistory();
+                this.showToast('success', '記錄已刪除', '合成歷史記錄已移除');
+            }
+
+            async clearHistory() {
+                if (confirm('確定要清除所有合成歷史語音紀錄嗎？這會釋放 IndexedDB 中的儲存空間。')) {
+                    this.historyItems = [];
+                    await this.db.clear();
+                    this.renderHistory();
+                    this.showToast('success', '歷史紀錄已清空', '所有語音合成檔案已清除');
+                }
+            }
+
+            // --- NOTIFICATION HELPERS ---
+            showToast(type, title, message) {
+                const icons = {
+                    success: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>`,
+                    error: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" x2="9" y1="9" y2="15"/>
+                        <line x1="9" x2="15" y1="9" y2="15"/>
+                    </svg>`,
+                    warning: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                        <line x1="12" x2="12" y1="9" y2="13"/>
+                        <line x1="12" x2="12.01" y1="17" y2="17"/>
+                    </svg>`
+                };
+
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.innerHTML = `
+                    <div class="toast-icon">${icons[type]}</div>
+                    <div class="toast-content">
+                        <div class="toast-title">${title}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                `;
+
+                const container = document.getElementById('toastContainer');
+                container.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.animation = 'toast-slide-in 0.3s reverse';
+                    setTimeout(() => toast.remove(), 290);
+                }, 5000);
+            }
+
+            // --- TIME UTILS ---
+            formatTime(seconds) {
+                if (isNaN(seconds)) return '0:00';
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+        }
+
+        // Initialize App on Load
+        let app;
+        document.addEventListener('DOMContentLoaded', () => {
+            app = new TTSApp();
+            // Bind global reference for inline html event onclicks
+            window.app = app;
+        });
+    </script>
+</body>
+</html>
