@@ -2542,7 +2542,10 @@ curl http://talk-dev.aitago.tw:8003/models</div>
 
                         if (submode === 'sft') {
                             const spk = document.getElementById('cosySpeaker').value;
-                            voiceName = spk || '預設音色';
+                            if (!spk || spk.trim() === '') {
+                                throw new Error('當前 CosyVoice 模型不包含內建音色，請切換至「零樣本複製 (Zero-Shot)」上傳音檔克隆，或切換至其他支援 SFT 的模型！');
+                            }
+                            voiceName = spk;
                             formData.append('speaker', spk);
                         } else {
                             // Zero-Shot Cloning
