@@ -1258,18 +1258,7 @@
             </div>
         </header>
 
-        <!-- MIXED CONTENT WARNING BANNER -->
-        <div class="warning-banner" id="mixedContentWarning">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-                <line x1="12" x2="12" y1="9" y2="13"/>
-                <line x1="12" x2="12.01" y1="17" y2="17"/>
-            </svg>
-            <div class="warning-banner-content">
-                <h4>混合內容 (Mixed Content) 限制提醒</h4>
-                <p>您目前透過安全的 HTTPS 連線開啟此頁面，但 TTS API 使用未加密的 HTTP 協定。瀏覽器可能會封鎖這些 API 請求。您可以：(1) 在瀏覽器網址列啟用「載入不安全指令碼」，(2) 下載 index.html 本地開啟，或 (3) 在下方設定中配置 HTTPS/CORS 代理服務。</p>
-            </div>
-        </div>
+
 
         <!-- STATUS BAR -->
         <div class="status-grid">
@@ -1942,10 +1931,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 // Initialize settings
                 this.loadSettings();
                 
-                // Show warning banner if https
-                if (window.location.protocol === 'https:') {
-                    document.getElementById('mixedContentWarning').style.display = 'flex';
-                }
+
 
                 // Initialize IndexedDB
                 await this.db.init();
