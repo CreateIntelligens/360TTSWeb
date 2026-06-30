@@ -2417,7 +2417,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
 
                 const optHayley = document.createElement('option');
                 optHayley.value = 'preset_hayley';
-                optHayley.textContent = '溫柔女聲 (Hayley)';
+                optHayley.textContent = '溫柔女聲 (Hayley - 全媒體之花 🌸)';
                 spkSelect.appendChild(optHayley);
 
                 const speakers = data.speakers || [''];
@@ -2563,7 +2563,7 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                             if (spk === 'preset_jay' || spk === 'preset_hayley') {
                                 // Under the hood, use cross_lingual mode to clone server-side reference audio files
                                 const presetFile = spk === 'preset_jay' ? 'asset/jay.wav' : 'asset/Hayley.wav';
-                                const displayName = spk === 'preset_jay' ? '周杰倫 (Jay)' : '溫柔女聲 (Hayley)';
+                                const displayName = spk === 'preset_jay' ? '周杰倫 (Jay)' : '溫柔女聲 (Hayley - 全媒體之花 🌸)';
                                 
                                 voiceName = `${displayName} [CosyVoice3]`;
                                 formData.set('mode', 'cross_lingual'); // Override mode
