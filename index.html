@@ -12,24 +12,25 @@
     <style>
         /* --- DESIGN SYSTEM & TOKENS --- */
         :root {
-            --bg-base: #080b10;
-            --bg-surface: #0f131a;
-            --bg-surface-elevated: #151a24;
+            /* Default: Catppuccin Frappé (Dark Mode) */
+            --bg-base: #303446;
+            --bg-surface: #292c3c;
+            --bg-surface-elevated: #414559;
             --border-color: rgba(255, 255, 255, 0.08);
             --border-color-hover: rgba(255, 255, 255, 0.15);
             
-            --primary: #8b5cf6; /* Violet */
-            --primary-glow: rgba(139, 92, 246, 0.15);
-            --secondary: #06b6d4; /* Cyan */
-            --secondary-glow: rgba(6, 182, 212, 0.15);
+            --primary: #ca9ee6; /* Mauve */
+            --primary-glow: rgba(202, 158, 230, 0.05);
+            --secondary: #8caaee; /* Blue */
+            --secondary-glow: rgba(140, 170, 238, 0.05);
             
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --text-dark: #4b5563;
+            --text-main: #c6d0f5; /* Text */
+            --text-muted: #a5adce; /* Subtext0 */
+            --text-dark: #737994; /* Overlay0 */
             
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
+            --success: #a6d189; /* Green */
+            --warning: #e5c890; /* Yellow */
+            --error: #e78284; /* Red */
             
             --radius-sm: 8px;
             --radius-md: 16px;
@@ -40,6 +41,28 @@
             
             --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-fast: all 0.15s ease;
+        }
+
+        /* Light Mode: Catppuccin Latte */
+        [data-theme="latte"] {
+            --bg-base: #eff1f5;
+            --bg-surface: #e6e9ef;
+            --bg-surface-elevated: #ccd0da;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --border-color-hover: rgba(0, 0, 0, 0.15);
+            
+            --primary: #8839ef; /* Mauve */
+            --primary-glow: rgba(136, 57, 239, 0.05);
+            --secondary: #1e66f5; /* Blue */
+            --secondary-glow: rgba(30, 102, 245, 0.05);
+            
+            --text-main: #4c4f69; /* Text */
+            --text-muted: #6c6f85; /* Subtext0 */
+            --text-dark: #9ca0b0; /* Overlay0 */
+            
+            --success: #40a02b; /* Green */
+            --warning: #df8e1d; /* Yellow */
+            --error: #d20f39; /* Red */
         }
 
         /* --- BASIC RESET --- */
@@ -57,8 +80,8 @@
             line-height: 1.6;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 40%);
+                radial-gradient(circle at 10% 20%, var(--primary-glow) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, var(--secondary-glow) 0%, transparent 40%);
         }
 
         a {
@@ -1185,31 +1208,54 @@
                 </div>
             </div>
 
-            <!-- NAVBAR -->
-            <nav class="nav-tabs">
-                <button class="nav-btn active" data-tab="generator">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <!-- RIGHT ACTIONS (NAV + THEME) -->
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <!-- NAVBAR -->
+                <nav class="nav-tabs">
+                    <button class="nav-btn active" data-tab="generator">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                        </svg>
+                        <span>語音合成</span>
+                    </button>
+                    <button class="nav-btn" data-tab="settings">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                        <span>設定</span>
+                    </button>
+                    <button class="nav-btn" data-tab="help">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                            <line x1="12" y1="17" x2="12.01" y1="17"/>
+                        </svg>
+                        <span>說明</span>
+                    </button>
+                </nav>
+
+                <!-- THEME TOGGLE -->
+                <button class="nav-btn" id="btnThemeToggle" title="切換主題 (貓普欽 Frappé / Latte)" style="border-radius: 50%; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--bg-surface); border: 1px solid var(--border-color); cursor: pointer;">
+                    <!-- Sun icon for light mode (Latte) -->
+                    <svg id="themeIconSun" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--warning);">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
                     </svg>
-                    <span>語音合成</span>
-                </button>
-                <button class="nav-btn" data-tab="settings">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"/>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    <!-- Moon icon for dark mode (Frappé) -->
+                    <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; color: var(--secondary);">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                     </svg>
-                    <span>設定</span>
                 </button>
-                <button class="nav-btn" data-tab="help">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                        <line x1="12" y1="17" x2="12.01" y1="17"/>
-                    </svg>
-                    <span>說明</span>
-                </button>
-            </nav>
+            </div>
         </header>
 
         <!-- MIXED CONTENT WARNING BANNER -->
@@ -1767,6 +1813,10 @@ curl http://talk-dev.aitago.tw:8003/models</div>
 
     <!-- MAIN JAVASCRIPT -->
     <script>
+        // Early theme initialization to prevent flickers
+        const savedTheme = localStorage.getItem('tts_theme') || 'frappe';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
         // --- INDEXEDDB HELPER FOR PERSISTENT HISTORY ---
         class HistoryDB {
             constructor() {
@@ -1999,10 +2049,43 @@ curl http://talk-dev.aitago.tw:8003/models</div>
             }
 
             bindUI() {
+                // Initialize theme toggle UI
+                const themeBtn = document.getElementById('btnThemeToggle');
+                const sunIcon = document.getElementById('themeIconSun');
+                const moonIcon = document.getElementById('themeIconMoon');
+                
+                const updateThemeUI = (theme) => {
+                    if (theme === 'latte') {
+                        sunIcon.classList.remove('hidden');
+                        moonIcon.classList.add('hidden');
+                    } else {
+                        sunIcon.classList.add('hidden');
+                        moonIcon.classList.remove('hidden');
+                    }
+                };
+                
+                // Initialize icon state
+                updateThemeUI(document.documentElement.getAttribute('data-theme') || 'frappe');
+                
+                themeBtn.addEventListener('click', () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme') || 'frappe';
+                    const newTheme = currentTheme === 'frappe' ? 'latte' : 'frappe';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('tts_theme', newTheme);
+                    updateThemeUI(newTheme);
+                    
+                    // Re-draw waveform to match light/dark styles
+                    if (this.currentAudioBuffer) {
+                        const progress = this.audioElement.currentTime / (this.audioElement.duration || 1);
+                        this.drawStaticWaveform(progress);
+                    }
+                });
+
                 // Navigation tabs switcher
-                document.querySelectorAll('.nav-btn').forEach(btn => {
+                document.querySelectorAll('.nav-tabs .nav-btn').forEach(btn => {
                     btn.addEventListener('click', () => {
-                        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.nav-tabs .nav-btn').forEach(b => b.classList.remove('active'));
                         document.querySelectorAll('.tab-content-panel').forEach(p => p.classList.remove('active'));
                         
                         btn.classList.add('active');
@@ -2720,17 +2803,21 @@ curl http://talk-dev.aitago.tw:8003/models</div>
                 const barCount = Math.floor(width / totalBarWidth);
                 const samplesPerBar = Math.floor(channelData.length / barCount);
 
-                // Gradients for styling
-                // Gray/Dark for unplayed
-                const unplayedGrad = ctx.createLinearGradient(0, 0, 0, height);
-                unplayedGrad.addColorStop(0, '#4b5563');
-                unplayedGrad.addColorStop(1, '#1f2937');
+                // Get colors dynamically from CSS variables to match active theme (Frappé / Latte)
+                const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#ca9ee6';
+                const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary').trim() || '#8caaee';
+                const textMutedColor = getComputedStyle(document.documentElement).getPropertyValue('--text-muted').trim() || '#a5adce';
+                const bgElevatedColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-surface-elevated').trim() || '#414559';
 
-                // Violet gradient for played
+                // Played gradient
                 const playedGrad = ctx.createLinearGradient(0, 0, 0, height);
-                playedGrad.addColorStop(0, '#8b5cf6');
-                playedGrad.addColorStop(0.5, '#06b6d4');
-                playedGrad.addColorStop(1, '#7c3aed');
+                playedGrad.addColorStop(0, primaryColor);
+                playedGrad.addColorStop(1, secondaryColor);
+
+                // Unplayed gradient
+                const unplayedGrad = ctx.createLinearGradient(0, 0, 0, height);
+                unplayedGrad.addColorStop(0, textMutedColor);
+                unplayedGrad.addColorStop(1, bgElevatedColor);
 
                 for (let i = 0; i < barCount; i++) {
                     let maxVal = 0;
